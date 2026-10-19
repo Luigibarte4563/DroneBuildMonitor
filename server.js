@@ -1,5 +1,5 @@
-// Local development server: static files and POST /api/send-email on one origin. Use `npm start`.
-// On Vercel the static files are served directly and api/send-email.js handles the API.
+// Static files and POST /api/send-email on one origin. `npm start` runs this locally,
+// and Vercel uses server.listen() here as the Node server entrypoint.
 import http from "node:http";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
