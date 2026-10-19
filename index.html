@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DroneBuild Monitor: drone monitoring for construction sites</title>
+    <meta name="description" content="Aerial photos, site maps and progress reports for construction sites in the Philippines." />
+    <meta name="theme-color" content="#55705a" />
+    <link rel="icon" href="favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <script type="module" src="js/home.js"></script>
+  </head>
+  <body>
+    <div id="header"></div>
+
+    <main>
+      <!-- hero -->
+      <section class="hero">
+        <div class="container hero-grid">
+          <h1 data-words>Drone monitoring | for construction sites</h1>
+          <div class="hero-side" data-fade data-delay="500">
+            <p>Aerial photos, site maps and progress reports for your project, anywhere in the Philippines.</p>
+            <div class="btn-row">
+              <a href="services.html" class="btn btn-solid" data-arrow>View services</a>
+              <a href="#coverage" class="btn btn-tint">Coverage</a>
+            </div>
+          </div>
+        </div>
+        <div class="hero-media">
+          <div class="hero-photo" data-fade data-delay="300">
+            <div class="photo">
+              <img src="images/site-equipment.jpg" alt="Aerial view of a construction site" fetchpriority="high" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- what we do -->
+      <section id="about" class="section">
+        <div class="container">
+          <div class="heading">
+            <h2 data-words>What we do</h2>
+            <div class="heading-side" data-fade data-delay="150">
+              <p>We fly a camera drone over your site and turn the photos into records your engineers can use.</p>
+            </div>
+          </div>
+          <div class="about-grid">
+            <div class="about-photo" data-fade>
+              <div class="photo"><img src="images/drone-pilot.jpg" alt="Drone flying over a site" loading="lazy" /></div>
+            </div>
+            <ol class="rows">
+              <li><div class="about-item" data-fade><span class="num">01</span><h3>Aerial monitoring</h3><p>Photos and video of the whole site from above.</p></div></li>
+              <li><div class="about-item" data-fade data-delay="50"><span class="num">02</span><h3>Progress tracking</h3><p>Compare the site across dates to see what changed.</p></div></li>
+              <li><div class="about-item" data-fade data-delay="100"><span class="num">03</span><h3>Site mapping</h3><p>Maps and measurements of the construction area.</p></div></li>
+              <li><div class="about-item" data-fade data-delay="150"><span class="num">04</span><h3>Problem spotting</h3><p>Check hard-to-reach areas without going on site.</p></div></li>
+              <li><div class="about-item" data-fade data-delay="200"><span class="num">05</span><h3>Digital reports</h3><p>Photos and data organised into one report.</p></div></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- services -->
+      <section id="services" class="section">
+        <div class="container">
+          <div class="heading">
+            <h2 data-words>Services</h2>
+            <div class="heading-side" data-fade data-delay="150">
+              <p>Prices are per site, in pesos, excluding VAT.</p>
+              <a href="services.html" class="btn btn-outline" data-arrow>Compare services</a>
+            </div>
+          </div>
+          <div id="services-grid" class="services-grid"></div>
+        </div>
+      </section>
+
+      <!-- how it works -->
+      <section class="panel-wrap">
+        <div class="process">
+          <div class="container">
+            <div class="heading"><h2 data-words>How it works</h2></div>
+            <div class="steps-wrap">
+              <div class="track"></div>
+              <div class="track-fill"></div>
+              <ol class="steps">
+                <li class="step">
+                  <span class="step-dot"></span>
+                  <div class="step-head"><span class="step-icon" data-icon="calendar"></span><span class="step-num">01</span></div>
+                  <h3>Book</h3>
+                  <p>Choose a service and a flight date.</p>
+                </li>
+                <li class="step">
+                  <span class="step-dot"></span>
+                  <div class="step-head"><span class="step-icon" data-icon="plane"></span><span class="step-num">02</span></div>
+                  <h3>Fly</h3>
+                  <p>Our pilot flies over your site.</p>
+                </li>
+                <li class="step">
+                  <span class="step-dot"></span>
+                  <div class="step-head"><span class="step-icon" data-icon="layers"></span><span class="step-num">03</span></div>
+                  <h3>Process</h3>
+                  <p>We turn the photos into maps and records.</p>
+                </li>
+                <li class="step">
+                  <span class="step-dot"></span>
+                  <div class="step-head"><span class="step-icon" data-icon="report"></span><span class="step-num">04</span></div>
+                  <h3>Report</h3>
+                  <p>You get the files and a report within 48 hours.</p>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- coverage -->
+      <section id="coverage" class="section">
+        <div class="container">
+          <div class="heading">
+            <h2 data-words>Coverage</h2>
+            <div class="heading-side" data-fade data-delay="150">
+              <p>We serve sites anywhere in the Philippines. We don't take projects abroad.</p>
+            </div>
+          </div>
+          <div class="coverage-grid">
+            <ul class="rows">
+              <li><div class="region" data-fade><div><h3>Luzon</h3><p>No travel fee in Metro Manila</p></div><span class="chip">Manila hub</span></div></li>
+              <li><div class="region" data-fade data-delay="80"><div><h3>Visayas</h3><p>Travel fee quoted per project</p></div><span class="chip">Cebu hub</span></div></li>
+              <li><div class="region" data-fade data-delay="160"><div><h3>Mindanao</h3><p>Travel fee quoted per project</p></div><span class="chip">Davao hub</span></div></li>
+            </ul>
+            <div class="map" data-fade>
+              <img src="images/ph-map.svg" alt="Map of the Philippines with service hubs in Manila, Cebu and Davao" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- stats -->
+      <section class="stats">
+        <div class="container stats-grid">
+          <div class="stat"><p class="stat-value"><span data-count="120">0</span><small>+</small></p><p class="stat-label">Sites flown</p></div>
+          <div class="stat"><p class="stat-value"><span data-count="2500">0</span><small> ha</small></p><p class="stat-label">Area mapped</p></div>
+          <div class="stat"><p class="stat-value"><span data-count="2.4" data-decimals="1">0</span><small> cm</small></p><p class="stat-label">Ground resolution</p></div>
+          <div class="stat"><p class="stat-value"><span data-count="48">0</span><small> h</small></p><p class="stat-label">Report turnaround</p></div>
+        </div>
+      </section>
+
+      <!-- our work -->
+      <section id="work" class="section">
+        <div class="container">
+          <div class="heading">
+            <h2 data-words>Our work</h2>
+            <div class="heading-side" data-fade data-delay="150"><p>Sample photos from recent flights.</p></div>
+          </div>
+          <div class="gallery">
+            <div class="shot tall zoom-parent" data-fade><div class="photo"><img src="images/street-works.jpg" alt="Road works" loading="lazy" /></div><span>Road works</span></div>
+            <div class="shot wide zoom-parent" data-fade data-delay="80"><div class="photo"><img src="images/subdivision.jpg" alt="Subdivision" loading="lazy" /></div><span>Subdivision</span></div>
+            <div class="shot zoom-parent" data-fade data-delay="160"><div class="photo"><img src="images/foundation.jpg" alt="Foundation" loading="lazy" /></div><span>Foundation</span></div>
+            <div class="shot zoom-parent" data-fade><div class="photo"><img src="images/earthworks.jpg" alt="Earthworks" loading="lazy" /></div><span>Earthworks</span></div>
+            <div class="shot zoom-parent" data-fade data-delay="80"><div class="photo"><img src="images/house-frames.jpg" alt="House framing" loading="lazy" /></div><span>House framing</span></div>
+            <div class="shot zoom-parent" data-fade data-delay="160"><div class="photo"><img src="images/drone-white.jpg" alt="Survey drone" loading="lazy" /></div><span>Survey drone</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- book a flight -->
+      <section class="cta-wrap">
+        <div class="cta">
+          <span class="logo logo-mark" role="img" aria-label="DroneBuild Monitor"></span>
+          <h2 data-words>Book a flight</h2>
+          <p>Add a service to your cart and check out.</p>
+          <div class="btn-row">
+            <a href="services.html" class="btn btn-solid" data-arrow>View services</a>
+            <a href="cart.html" class="btn btn-tint">View cart</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="footer"></div>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "dronebuild-monitor",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "DroneBuild Monitor site with a Gmail mailer",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22.9"
+  },
+  "dependencies": {
+    "nodemailer": "^10.1.7"
+  }
+}
