@@ -2,14 +2,7 @@
   "functions": {
     "server.js": {
       "maxDuration": 30,
-      "includeFiles": [
-        "*.html",
-        "favicon.png",
-        "css/**",
-        "images/**",
-        "js/**",
-        "logo/**"
-      ]
+      "includeFiles": "{*.html,favicon.png,css/**,images/**,js/**,logo/**}"
     }
   }
 }
