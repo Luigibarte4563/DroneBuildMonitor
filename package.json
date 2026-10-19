@@ -5,7 +5,7 @@
   "type": "module",
   "description": "DroneBuild Monitor site with a Gmail mailer",
   "scripts": {
-    "start": "node --env-file-if-exists=.env server.js",
+    "start": "node --env-file-if-exists=.env local-server.js",
     "test": "node --test"
   },
   "engines": {

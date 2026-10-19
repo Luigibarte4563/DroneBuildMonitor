@@ -15,11 +15,11 @@ Then go to http://localhost:4173. Copy `.env.example` to `.env` first if you wan
 
 ## Deploy on Vercel
 
-Import the GitHub repo as a Node project. Set these in **Project Settings → Environment Variables**, then redeploy:
+Import the GitHub repo. Vercel serves the HTML, CSS, images and JS directly and deploys `api/send-email.js` as a function; set these in **Project Settings → Environment Variables**, then redeploy:
 
 `GMAIL_USER`, `GMAIL_APP_PASSWORD`, and optionally `MAIL_FROM_NAME`, `MAIL_REPLY_TO`, `MAIL_BCC`.
 
-`vercel.json` keeps the static assets in the function bundle and raises the function limit to 30 seconds for SMTP. GitHub Pages cannot run `server.js`, so it cannot send email.
+`vercel.json` raises the function limit to 30 seconds for SMTP. GitHub Pages is static-only, so it cannot send email.
 
 ## Files
 
@@ -30,7 +30,9 @@ Import the GitHub repo as a Node project. Set these in **Project Settings → En
 - `js/layout.js`: header, footer and cart drawer
 - `js/motion.js`: scroll animations
 - `js/mailer.js`: reusable `sendEmail()` client
-- `server.js`: static server + Gmail API endpoint
+- `lib/mailer.js`: validation, rate limit and Gmail SMTP, shared by both servers
+- `local-server.js`: static server + API endpoint for `npm start`
+- `api/send-email.js`: the same API as a Vercel function
 - `images/`, `logo/`: photos and logo
 
 Checkout payment is still a demo. No real payment is made; the booking email is real.

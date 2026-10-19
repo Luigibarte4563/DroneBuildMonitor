@@ -38,7 +38,14 @@ export async function sendEmail({ to, subject, message, website = "" } = {}, sta
       json = true;
     } catch {}
     // a static server (Live Server, python http.server) has no API and answers with an HTML 404
-    if (!json) throw new MailerError("Email service is not running at this address. Start it with `npm start` and open http://localhost:4173.");
+    if (!json) {
+      const local = typeof location !== "undefined" && ["localhost", "127.0.0.1"].includes(location.hostname);
+      throw new MailerError(
+        local
+          ? "Email service is not running at this address. Start it with `npm start` and open http://localhost:4173."
+          : "Email service is temporarily unavailable. Please try again later.",
+      );
+    }
     if (!res.ok || !data.success) throw new MailerError(data.message || "Unable to send the email. Please try again later.");
     return data;
   })();

@@ -14,10 +14,23 @@ async function withFetch(impl, run) {
   }
 }
 
-test("an HTML 404 from a static server gets a useful message", async () => {
+test("an HTML 404 on localhost points at npm start", async () => {
+  globalThis.location = { hostname: "localhost" };
+  try {
+    await withFetch(
+      async () => new Response("<html>Not found</html>", { status: 404, headers: { "content-type": "text/html" } }),
+      () => assert.rejects(sendEmail(request), /npm start/),
+    );
+  } finally {
+    delete globalThis.location;
+  }
+});
+
+test("an HTML 404 in production stays user-friendly", async () => {
+  delete globalThis.location;
   await withFetch(
     async () => new Response("<html>Not found</html>", { status: 404, headers: { "content-type": "text/html" } }),
-    () => assert.rejects(sendEmail(request), /npm start/),
+    () => assert.rejects(sendEmail(request), /temporarily unavailable/),
   );
 });
 
