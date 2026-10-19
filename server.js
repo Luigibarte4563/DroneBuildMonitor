@@ -115,5 +115,3 @@ const server = http.createServer(async (req, res) => {
 
 // Node's test runner imports lib/mailer.js only, so this always starts outside tests.
 server.listen(PORT, () => console.log(`DroneBuild Monitor on http://localhost:${PORT}`));
-
-export { server };

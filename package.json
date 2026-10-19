@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "main": "server.js",
   "description": "DroneBuild Monitor site with a Gmail mailer",
   "scripts": {
     "start": "node --env-file-if-exists=.env server.js",
