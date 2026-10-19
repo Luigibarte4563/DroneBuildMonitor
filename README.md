@@ -13,6 +13,14 @@ Then go to http://localhost:4173. Copy `.env.example` to `.env` first if you wan
 
 `npm start` serves the pages and `POST /api/send-email` from one origin, so there is no CORS setup. Running plain `python3 -m http.server 4173` still shows the pages but has no mailer. The same applies to VS Code Live Server on port 5500: checkout will report that the email service is not running. Always use `npm start` when testing email.
 
+## Deploy on Vercel
+
+Import the GitHub repo as a Node project. Set these in **Project Settings → Environment Variables**, then redeploy:
+
+`GMAIL_USER`, `GMAIL_APP_PASSWORD`, and optionally `MAIL_FROM_NAME`, `MAIL_REPLY_TO`, `MAIL_BCC`.
+
+`vercel.json` keeps the static assets in the function bundle and raises the function limit to 30 seconds for SMTP. GitHub Pages cannot run `server.js`, so it cannot send email.
+
 ## Files
 
 - `index.html`, `services.html`, `cart.html`, `checkout.html`, `success.html`: pages

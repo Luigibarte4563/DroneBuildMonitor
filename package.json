@@ -9,7 +9,7 @@
     "test": "node --test"
   },
   "engines": {
-    "node": ">=22.9"
+    "node": "22.x"
   },
   "dependencies": {
     "nodemailer": "^10.1.7"

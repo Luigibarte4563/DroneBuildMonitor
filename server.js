@@ -237,8 +237,10 @@ if (!transporter) {
   console.log(`[mailer] Gmail SMTP ready for ${GMAIL_USER}`);
 }
 
-// only listen when run directly, so tests can import the helpers
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+// only listen when run directly or on Vercel, so tests can import the helpers.
+// Vercel detects a Node server by the server.listen() call during startup.
+const isVercel = Boolean(process.env.VERCEL);
+if (isVercel || (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url))) {
   server.listen(PORT, () => console.log(`DroneBuild Monitor on http://localhost:${PORT}`));
 }
 
