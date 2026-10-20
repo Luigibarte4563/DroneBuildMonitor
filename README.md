@@ -38,7 +38,7 @@ Checkout payment is still a demo. No real payment is made; the booking email is 
 
 ## Email (Gmail)
 
-Checkout sends a booking confirmation to the customer's own address and a separate owner copy to `GMAIL_USER` (plus `MAIL_BCC` if set), in parallel. If Gmail does not accept the buyer's address, the order still completes and the success page asks the buyer to check the address or contact us. Credentials live only in `.env` on the server and never reach the browser. One dependency: `nodemailer`.
+Checkout sends a booking confirmation to the customer's own address and a separate owner copy to `GMAIL_USER` (plus `MAIL_BCC` if set), in parallel. If Gmail does not accept the buyer's address, the order still completes, the API returns `buyerEmailFailed: true`, and the success page asks the buyer to check the address or contact us. If the owner copy fails it is retried once; if it still fails, checkout stays on the page and shows an error. Credentials live only in `.env` on the server and never reach the browser. One dependency: `nodemailer`.
 
 ### 1. Configure Gmail securely
 

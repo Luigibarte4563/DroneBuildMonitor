@@ -201,7 +201,7 @@ function formView() {
         method: method?.label || "Not selected",
         items: items.map((l) => ({ name: l.service.name, qty: l.qty, price: l.service.price })),
         ...t,
-        buyerDelivered: mail.buyerDelivered !== false,
+        buyerEmailFailed: mail.buyerEmailFailed === true,
         placedAt: new Date().toISOString(),
       });
       location.href = "success.html";
