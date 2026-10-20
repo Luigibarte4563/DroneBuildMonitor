@@ -9,7 +9,7 @@ const LINKS = [
   { href: "index.html#work", label: "Work" },
 ];
 
-const PAYMENTS = ["GCash", "Maya", "Visa", "Mastercard", "BDO", "BPI", "Cash on site"];
+const PAYMENTS = ["GCash", "BDO", "BPI", "Metrobank", "Landbank", "Debit card", "Credit card", "Cash on site"];
 
 const PHOTO_IDS = ["shCuG0EOZnE", "oQEXe-7d2sM", "KDZBdPFTBfg", "yWBIdNvlY7Q", "gxV05Fccnu4", "IMqe5dTKBLI", "PAf9rj_DKCU", "fvPfMJL2wKw", "XsUWk9pfBIc"];
 

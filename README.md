@@ -38,7 +38,7 @@ Checkout payment is still a demo. No real payment is made; the booking email is 
 
 ## Email (Gmail)
 
-Checkout sends a booking confirmation to the customer's own address through Gmail SMTP. If `MAIL_BCC` is set, the site owner gets a blind copy of every booking email. Credentials live only in `.env` on the server and never reach the browser. One dependency: `nodemailer`.
+Checkout sends a booking confirmation to the customer's own address and a separate owner copy to `GMAIL_USER` (plus `MAIL_BCC` if set), in parallel. If Gmail does not accept the buyer's address, the order still completes and the success page asks the buyer to check the address or contact us. Credentials live only in `.env` on the server and never reach the browser. One dependency: `nodemailer`.
 
 ### 1. Configure Gmail securely
 
@@ -57,7 +57,7 @@ Checkout sends a booking confirmation to the customer's own address through Gmai
 | `GMAIL_APP_PASSWORD` | yes | the 16-character App Password |
 | `MAIL_FROM_NAME` | no | display name, defaults to `DroneBuild Monitor` |
 | `MAIL_REPLY_TO` | no | where replies go, e.g. `hello@dronebuild.ph` |
-| `MAIL_BCC` | no | fixed address that gets a blind copy of every booking email, e.g. the site owner |
+| `MAIL_BCC` | no | extra address that gets an owner copy of every booking email, e.g. the site owner |
 | `PORT` | no | defaults to `4173` |
 
 Never put your normal Google account password in `.env`, and never ask anyone for theirs.
@@ -97,7 +97,7 @@ Expected success: `{"success":true,"message":"Email accepted for sending."}`
 
 ### 5. Testing checklist
 
-1. **Valid email** — full checkout; the confirmation arrives at the address typed in the form. If `MAIL_BCC` is set, a blind copy arrives at that address too (unless it is the same address).
+1. **Valid email** — full checkout; the confirmation arrives at the address typed in the form, and the owner copy arrives at `GMAIL_USER` (and `MAIL_BCC` if set).
 2. **Invalid recipient** — `not-an-email`; the browser blocks it, and the API returns `400` if you post it directly.
 3. **Empty subject/message** — API returns `400` with a specific message.
 4. **Wrong credentials** — change `GMAIL_APP_PASSWORD` in `.env`, restart; the browser shows a generic error, the terminal logs `EAUTH` plus a hint.

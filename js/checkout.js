@@ -4,13 +4,34 @@ import { formatPHP, totals } from "./data.js";
 import { icon, arrow } from "./icons.js";
 import { sendEmail } from "./mailer.js";
 
-const METHODS = [
-  { id: "gcash", label: "GCash", hint: "Pay via GCash e-wallet", icon: "phone" },
-  { id: "maya", label: "Maya", hint: "Pay via Maya e-wallet", icon: "wallet" },
-  { id: "card", label: "Credit / Debit card", hint: "Visa, Mastercard, JCB", icon: "card" },
-  { id: "bank", label: "Bank transfer", hint: "BDO or BPI", icon: "bank" },
-  { id: "cash", label: "Cash on site", hint: "Pay the pilot on flight day", icon: "cash" },
+const PAYMENT_GROUPS = [
+  {
+    title: "E-Wallet",
+    methods: [{ id: "gcash", badge: "G", label: "GCash", hint: "Pay with your GCash wallet" }],
+  },
+  {
+    title: "Online Banking",
+    methods: [
+      { id: "bdo", badge: "BDO", label: "BDO", hint: "BDO Unibank" },
+      { id: "bpi", badge: "BPI", label: "BPI", hint: "Bank of the Philippine Islands" },
+      { id: "metrobank", badge: "MB", label: "Metrobank", hint: "Metropolitan Bank & Trust" },
+      { id: "landbank", badge: "LBP", label: "Landbank", hint: "Land Bank of the Philippines" },
+    ],
+  },
+  {
+    title: "Debit or Credit Card",
+    methods: [
+      { id: "debit", badge: "DR", label: "Debit card", hint: "Pay from your bank account" },
+      { id: "credit", badge: "CR", label: "Credit card", hint: "Pay with your credit line" },
+    ],
+  },
+  {
+    title: "Cash",
+    methods: [{ id: "cash", badge: "₱", label: "Cash on site", hint: "Pay the pilot on flight day" }],
+  },
 ];
+
+const METHODS = PAYMENT_GROUPS.flatMap((g) => g.methods.map((m) => ({ ...m, group: g.title })));
 
 const REGIONS = ["Metro Manila (NCR)", "Luzon (outside NCR)", "Visayas", "Mindanao"];
 const PH_MOBILE = "^(\\+?63|0)9\\d{2}\\s?\\d{3}\\s?\\d{4}$";
@@ -18,25 +39,6 @@ const app = document.getElementById("app");
 const items = cart.lines();
 
 const field = (label, input, cls = "") => `<label class="field ${cls}"><span>${label}</span>${input}</label>`;
-
-// fields shown under each payment method
-const PANELS = {
-  gcash: field("GCash account number", `<input class="input" name="wallet" type="tel" required placeholder="0917 123 4567" pattern="${PH_MOBILE}" title="PH mobile number, e.g. 0917 123 4567">`),
-  maya: field("Maya account number", `<input class="input" name="wallet" type="tel" required placeholder="0917 123 4567" pattern="${PH_MOBILE}" title="PH mobile number, e.g. 0917 123 4567">`),
-  card: `<div class="card-fields">
-      ${field("Name on card", `<input class="input" name="cardName" required autocomplete="cc-name" placeholder="JUAN DELA CRUZ">`, "full")}
-      ${field("Card number", `<input class="input" name="cardNumber" required inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" pattern="^(\\d{4} ){3}\\d{4}$" title="16-digit card number">`, "full")}
-      ${field("Expiry", `<input class="input" name="expiry" required inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" pattern="^(0[1-9]|1[0-2])\\/\\d{2}$" title="MM/YY">`)}
-      ${field("CVC", `<input class="input" name="cvc" required inputmode="numeric" autocomplete="cc-csc" placeholder="123" maxlength="4" pattern="^\\d{3,4}$" title="3 or 4 digits">`)}
-    </div>`,
-  bank: `<p class="panel-text"><strong>Transfer the total to either account:</strong></p>
-    <dl class="banks">
-      <div class="bank"><dt>BDO</dt><dd class="tabular">0012 3456 7890</dd><dd class="small">DroneBuild Monitor Inc.</dd></div>
-      <div class="bank"><dt>BPI</dt><dd class="tabular">1234 5678 90</dd><dd class="small">DroneBuild Monitor Inc.</dd></div>
-    </dl>
-    <p class="panel-text">We'll email you how to send your deposit slip.</p>`,
-  cash: `<p class="panel-text">Pay our pilot in cash on the flight date. You get an official receipt on site.</p>`,
-};
 
 // plain-text body of the booking email; the server escapes it and wraps it in the HTML template
 function orderMessage(data, method, items, t, orderId) {
@@ -55,8 +57,9 @@ function orderMessage(data, method, items, t, orderId) {
     `Region: ${g("region")}`,
     `Contact: ${g("name")}`,
     g("company") ? `Company: ${g("company")}` : null,
+    `Email: ${g("email")}`,
     `Phone: ${g("phone")}`,
-    `Payment method: ${method?.label || "Not selected"}`,
+    `Payment method: ${method ? `${method.group} - ${method.label}` : "Not selected"}`,
     "",
     "Services",
     ...items.map((l) => `- ${l.service.name} × ${l.qty} — ${formatPHP(l.lineTotal)}`),
@@ -64,8 +67,6 @@ function orderMessage(data, method, items, t, orderId) {
     `Subtotal: ${formatPHP(t.subtotal)}`,
     `VAT (12%): ${formatPHP(t.vat)}`,
     `Total: ${formatPHP(t.total)}`,
-    "",
-    "Payment is a demo — no card or wallet was charged. Our team will contact you to arrange payment and the flight schedule.",
     "",
     "If anything is wrong, reply to this email or call +63 917 000 0000.",
   ];
@@ -85,6 +86,7 @@ function formView() {
   const t = totals(sub);
   const minDate = new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10);
   const startedAt = Date.now(); // the server rejects submissions faster than a human can type
+  const first = METHODS[0].id;
 
   app.innerHTML = `<section class="page"><div class="container">
     <div class="checkout-head">
@@ -118,16 +120,20 @@ function formView() {
         <fieldset>
           <legend><span>03</span>Payment method</legend>
           <div class="methods" role="radiogroup">
-            ${METHODS.map(
-              (m, i) => `<label class="method ${i === 0 ? "active" : ""} ${m.id === "cash" ? "wide" : ""}">
-                <input type="radio" name="method" value="${m.id}" class="sr-only" ${i === 0 ? "checked" : ""}>
-                <span class="method-icon">${icon(m.icon)}</span>
+            ${PAYMENT_GROUPS.map(
+              (g) => `<h3 class="method-group">${g.title}</h3>
+              ${g.methods
+                .map(
+                  (m) => `<label class="method ${m.id === first ? "active" : ""}">
+                <input type="radio" name="method" value="${m.id}" class="sr-only" ${m.id === first ? "checked" : ""}>
+                <span class="method-icon">${m.badge}</span>
                 <span class="method-text"><strong>${m.label}</strong><small>${m.hint}</small></span>
                 <span class="radio"></span>
               </label>`,
+                )
+                .join("")}`,
             ).join("")}
           </div>
-          <div class="method-panel" id="panel"></div>
         </fieldset>
         <input class="sr-only" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
       </div>
@@ -147,29 +153,10 @@ function formView() {
   </div></section>`;
 
   const form = document.getElementById("checkout");
-  const panel = document.getElementById("panel");
 
-  // switch payment method
-  const showPanel = (id) => {
-    panel.innerHTML = PANELS[id];
-    panel.style.animation = "none";
-    panel.offsetHeight;
-    panel.style.animation = "";
-    form.querySelectorAll(".method").forEach((el) => el.classList.toggle("active", el.querySelector("input").value === id));
-  };
-  showPanel("gcash");
-  form.addEventListener("change", (e) => e.target.name === "method" && showPanel(e.target.value));
-
-  // format card number and expiry while typing
-  form.addEventListener("input", (e) => {
-    const el = e.target;
-    if (el.name === "cardNumber") {
-      el.value = el.value.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
-    }
-    if (el.name === "expiry") {
-      const d = el.value.replace(/\D/g, "").slice(0, 4);
-      el.value = d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
-    }
+  form.addEventListener("change", (e) => {
+    if (e.target.name !== "method") return;
+    form.querySelectorAll(".method").forEach((el) => el.classList.toggle("active", el.querySelector("input").checked));
   });
 
   // mail the booking first; only redirect once the server accepted it
@@ -185,8 +172,9 @@ function formView() {
     pay.innerHTML = `${icon("loader", "spin")} Processing payment…`;
     paying = true;
 
+    let mail;
     try {
-      await sendEmail(
+      mail = await sendEmail(
         {
           to: data.get("email"),
           subject: `Your DroneBuild booking request (${orderId})`,
@@ -213,6 +201,7 @@ function formView() {
         method: method?.label || "Not selected",
         items: items.map((l) => ({ name: l.service.name, qty: l.qty, price: l.service.price })),
         ...t,
+        buyerDelivered: mail.buyerDelivered !== false,
         placedAt: new Date().toISOString(),
       });
       location.href = "success.html";
