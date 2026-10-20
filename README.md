@@ -23,13 +23,15 @@ Import the GitHub repo. Vercel detects `server.js` as the Node server entrypoint
 
 ## Files
 
-- `index.html`, `services.html`, `cart.html`, `checkout.html`, `success.html`: pages
+- `index.html`, `services.html`, `cart.html`, `checkout.html`, `success.html`, `refund.html`: pages
 - `css/styles.css`: all styles
 - `js/data.js`: services and prices
 - `js/cart.js`: cart saved in localStorage
 - `js/layout.js`: header, footer and cart drawer
 - `js/motion.js`: scroll animations
 - `js/mailer.js`: reusable `sendEmail()` client
+- `js/refund.js`: refund request form
+- `js/refund-data.js`: order details encoded in the refund link
 - `lib/mailer.js`: validation, rate limit and Gmail SMTP
 - `server.js`: static server + API endpoint; local `npm start` and the Vercel entrypoint
 - `images/`, `logo/`: photos and logo
@@ -38,7 +40,7 @@ Checkout payment is still a demo. No real payment is made; the booking email is 
 
 ## Email (Gmail)
 
-Checkout sends a booking confirmation to the customer's own address and a separate owner copy to `GMAIL_USER` (plus `MAIL_BCC` if set), in parallel. If Gmail does not accept the buyer's address, the order still completes, the API returns `buyerEmailFailed: true`, and the success page asks the buyer to check the address or contact us. If the owner copy fails it is retried once; if it still fails, checkout stays on the page and shows an error. Credentials live only in `.env` on the server and never reach the browser. One dependency: `nodemailer`.
+Checkout sends a booking confirmation to the customer's own address and a separate owner copy to `GMAIL_USER` (plus `MAIL_BCC` if set), in parallel. If Gmail does not accept the buyer's address, the order still completes, the API returns `buyerEmailFailed: true`, and the success page asks the buyer to check the address or contact us. If the owner copy fails it is retried once; if it still fails, checkout stays on the page and shows an error. Both copies of the confirmation include a Request a refund button; the link carries a compact copy of the order, so the refund page shows the receipt on any device. Submitting the form emails the request to the buyer and the owner copy. Credentials live only in `.env` on the server and never reach the browser. One dependency: `nodemailer`.
 
 ### 1. Configure Gmail securely
 

@@ -55,3 +55,19 @@ test("a successful send returns the API payload", async () => {
     async () => assert.deepEqual(await sendEmail(request), { success: true, message: "Email accepted for sending." }),
   );
 });
+
+test("sendEmail forwards the refund button and flag", async () => {
+  let body;
+  await withFetch(
+    async (_url, options) => {
+      body = JSON.parse(options.body);
+      return new Response(JSON.stringify({ success: true, message: "Email accepted for sending." }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    },
+    () => sendEmail({ ...request, cta: { label: "Request a refund", href: "https://example.com/refund" }, refund: true }),
+  );
+  assert.deepEqual(body.cta, { label: "Request a refund", href: "https://example.com/refund" });
+  assert.equal(body.refund, true);
+});

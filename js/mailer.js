@@ -15,7 +15,7 @@ function check({ to, subject, message }) {
 }
 
 // startedAt is when the form was rendered: the server rejects impossibly fast submissions
-export async function sendEmail({ to, subject, message, website = "" } = {}, startedAt = Date.now()) {
+export async function sendEmail({ to, subject, message, website = "", cta, refund = false } = {}, startedAt = Date.now()) {
   check({ to, subject, message });
   if (inFlight) return inFlight;
 
@@ -25,7 +25,7 @@ export async function sendEmail({ to, subject, message, website = "" } = {}, sta
       res = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ to: to.trim(), subject, message, website, startedAt }),
+        body: JSON.stringify({ to: to.trim(), subject, message, website, startedAt, cta, refund }),
       });
     } catch {
       throw new MailerError("Network error. Check your connection and try again.");

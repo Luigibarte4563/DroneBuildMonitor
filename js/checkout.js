@@ -3,6 +3,7 @@ import * as cart from "./cart.js";
 import { formatPHP, totals } from "./data.js";
 import { icon, arrow } from "./icons.js";
 import { sendEmail } from "./mailer.js";
+import { encodeOrder } from "./refund-data.js";
 
 const PAYMENT_GROUPS = [
   {
@@ -67,6 +68,8 @@ function orderMessage(data, method, items, t, orderId) {
     `Subtotal: ${formatPHP(t.subtotal)}`,
     `VAT (12%): ${formatPHP(t.vat)}`,
     `Total: ${formatPHP(t.total)}`,
+    "",
+    `Refundable: you can cancel within 7 days and get ${formatPHP(t.total * 0.8)} back (a 20% cancellation fee of ${formatPHP(t.total * 0.2)} applies).`,
     "",
     "If anything is wrong, reply to this email or call +63 917 000 0000.",
   ];
@@ -145,6 +148,7 @@ function formView() {
             .map((l) => `<li><span>${l.service.name} <span class="x">× ${l.qty}</span></span><span class="tabular strong">${formatPHP(l.lineTotal)}</span></li>`)
             .join("")}</ul>
           ${cart.totalsHTML(sub)}
+          <p class="note">Refundable. Cancel within 7 days using the link in your confirmation email. A 20% cancellation fee applies; you get ${formatPHP(t.total * 0.8)} back.</p>
           <button type="submit" class="btn btn-solid btn-full" id="pay">${icon("lock")} Pay ${formatPHP(t.total)}</button>
           <p class="note" id="mail-status" role="status">Your booking email is real. Payment is a demo; no card is charged.</p>
         </div>
@@ -168,6 +172,19 @@ function formView() {
     const status = document.getElementById("mail-status");
     const note = status.textContent;
     const orderId = `DBM-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+    const refundUrl = new URL("refund.html", location.href);
+    refundUrl.searchParams.set("ref", orderId);
+    refundUrl.searchParams.set(
+      "order",
+      encodeOrder({
+        id: orderId,
+        items: items.map((l) => ({ name: l.service.name, unit: l.service.unit, qty: l.qty, price: l.service.price })),
+        subtotal: t.subtotal,
+        vat: t.vat,
+        total: t.total,
+        method: method ? `${method.group} - ${method.label}` : "Not selected",
+      }),
+    );
     pay.disabled = true;
     pay.innerHTML = `${icon("loader", "spin")} Processing payment…`;
     paying = true;
@@ -180,6 +197,7 @@ function formView() {
           subject: `Your DroneBuild booking request (${orderId})`,
           message: orderMessage(data, method, items, t, orderId),
           website: data.get("website") || "",
+          cta: { label: "Request a refund", href: refundUrl.href },
         },
         startedAt,
       );

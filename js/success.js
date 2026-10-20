@@ -12,7 +12,7 @@ const lead = !order
   ? ""
   : buyerEmailFailed
     ? `Your booking is saved, but we couldn't deliver the confirmation to <strong>${order.email}</strong>. Check the email address or contact us at +63 917 000 0000. ${spamNote} We'll still call you within 24 hours.`
-    : `We sent a confirmation to <strong>${order.email}</strong>. ${spamNote} We'll call you within 24 hours to schedule the flight.`;
+    : `We've sent a confirmation email to <strong>${order.email}</strong>. It includes a link to request a refund within 7 days. ${spamNote} We'll call you within 24 hours to schedule the flight.`;
 
 app.innerHTML = !order
   ? `<section class="center-empty"><h1>No recent order</h1><a href="services.html" class="btn btn-solid">Browse services${arrow()}</a></section>`
