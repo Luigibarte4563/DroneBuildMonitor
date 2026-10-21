@@ -15,6 +15,8 @@ const PAYMENT_GROUPS = [
     methods: [
       { id: "bdo", badge: "BDO", label: "BDO", hint: "BDO Unibank transfer" },
       { id: "bpi", badge: "BPI", label: "BPI", hint: "BPI transfer" },
+      { id: "metrobank", badge: "MB", label: "Metrobank", hint: "Metrobank transfer" },
+      { id: "landbank", badge: "LBP", label: "Landbank", hint: "Landbank transfer" },
     ],
   },
   {
