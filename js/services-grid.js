@@ -1,7 +1,7 @@
 import { SERVICES, formatPHP } from "./data.js";
 import { icon } from "./icons.js";
 
-// service cards with add-to-cart buttons
+// service cards with add-to-booking buttons
 export function renderServices(el) {
   el.innerHTML = SERVICES.map(
     (s, i) => `<div data-fade data-delay="${i * 100}">
@@ -17,7 +17,7 @@ export function renderServices(el) {
           <p class="price">${formatPHP(s.price)}</p>
           <p class="unit">${s.unit}</p>
           <ul class="features">${s.features.map((f) => `<li>${icon("check")}<span>${f}</span></li>`).join("")}</ul>
-          <button type="button" class="btn ${s.featured ? "btn-paper" : "btn-solid"} btn-full add" data-add="${s.id}">${icon("plus")} Add to cart</button>
+          <button type="button" class="btn ${s.featured ? "btn-paper" : "btn-solid"} btn-full add" data-add="${s.id}">${icon("plus")} Add to booking</button>
         </div>
       </article>
     </div>`,

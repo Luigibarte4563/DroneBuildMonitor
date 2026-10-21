@@ -8,33 +8,35 @@ import { encodeOrder } from "./refund-data.js";
 const PAYMENT_GROUPS = [
   {
     title: "E-Wallet",
-    methods: [{ id: "gcash", badge: "G", label: "GCash", hint: "Pay with your GCash wallet" }],
+    methods: [{ id: "gcash", badge: "G", label: "GCash", hint: "Settle with your GCash wallet" }],
   },
   {
     title: "Online Banking",
     methods: [
-      { id: "bdo", badge: "BDO", label: "BDO", hint: "BDO Unibank" },
-      { id: "bpi", badge: "BPI", label: "BPI", hint: "Bank of the Philippine Islands" },
-      { id: "metrobank", badge: "MB", label: "Metrobank", hint: "Metropolitan Bank & Trust" },
-      { id: "landbank", badge: "LBP", label: "Landbank", hint: "Land Bank of the Philippines" },
+      { id: "bdo", badge: "BDO", label: "BDO", hint: "BDO Unibank transfer" },
+      { id: "bpi", badge: "BPI", label: "BPI", hint: "BPI transfer" },
     ],
   },
   {
     title: "Debit or Credit Card",
     methods: [
-      { id: "debit", badge: "DR", label: "Debit card", hint: "Pay from your bank account" },
+      { id: "debit", badge: "DR", label: "Debit card", hint: "Charged straight from your bank account" },
       { id: "credit", badge: "CR", label: "Credit card", hint: "Pay with your credit line" },
     ],
   },
   {
     title: "Cash",
-    methods: [{ id: "cash", badge: "₱", label: "Cash on site", hint: "Pay the pilot on flight day" }],
+    methods: [{ id: "cash", badge: "₱", label: "Cash on flight day", hint: "Pay the pilot on site" }],
+  },
+  {
+    title: "Corporate",
+    methods: [{ id: "terms", badge: "30D", label: "Credit terms (30 days)", hint: "For approved corporate accounts" }],
   },
 ];
 
 const METHODS = PAYMENT_GROUPS.flatMap((g) => g.methods.map((m) => ({ ...m, group: g.title })));
 
-const REGIONS = ["Metro Manila (NCR)", "Luzon (outside NCR)", "Visayas", "Mindanao"];
+const REGIONS = ["Metro Manila (NCR)", "North & Central Luzon", "South Luzon", "Visayas", "Mindanao"];
 const PH_MOBILE = "^(\\+?63|0)9\\d{2}\\s?\\d{3}\\s?\\d{4}$";
 const app = document.getElementById("app");
 const items = cart.lines();
@@ -44,22 +46,29 @@ const field = (label, input, cls = "") => `<label class="field ${cls}"><span>${l
 // plain-text body of the booking email; the server escapes it and wraps it in the HTML template
 function orderMessage(data, method, items, t, orderId) {
   const g = (key) => String(data.get(key) || "").trim();
-  const firstName = g("name").split(/\s+/)[0] || "there";
-  const rawDate = g("date");
+  const firstName = g("contact_name").split(/\s+/)[0] || "there";
+  const rawDate = g("survey_date");
   const flightDate = rawDate
     ? new Date(`${rawDate}T00:00:00`).toLocaleDateString("en-PH", { year: "numeric", month: "long", day: "numeric" })
     : "Not set";
   const lines = [
-    `Thank you for your booking request, ${firstName}. We've received your details and will call you within 24 hours to confirm the flight schedule.`,
+    `Thank you for your booking request, ${firstName}. Here is what happens next:`,
+    "",
+    "1. A survey coordinator calls you within 24 hours (Mon–Sat) to confirm the slot.",
+    "2. We check airspace clearance and drone permits for your site.",
+    "3. The flight plan and pilot details reach you by email before we fly.",
     "",
     `Booking reference: ${orderId}`,
-    `Preferred flight date: ${flightDate}`,
-    `Site address: ${g("address")}`,
-    `Region: ${g("region")}`,
-    `Contact: ${g("name")}`,
-    g("company") ? `Company: ${g("company")}` : null,
-    `Email: ${g("email")}`,
-    `Phone: ${g("phone")}`,
+    `Preferred survey date: ${flightDate}`,
+    `Site address: ${g("site_address")}`,
+    `Region: ${g("site_region")}`,
+    `Survey type: ${g("survey_type")}`,
+    g("site_area") ? `Site area: ${g("site_area")} hectares` : null,
+    g("site_contact") ? `Site contact: ${g("site_contact")}` : null,
+    `Contact: ${g("contact_name")}`,
+    g("company_name") ? `Company: ${g("company_name")}` : null,
+    `Email: ${g("contact_email")}`,
+    `Phone: ${g("contact_phone")}`,
     `Payment method: ${method ? `${method.group} - ${method.label}` : "Not selected"}`,
     "",
     "Services",
@@ -69,17 +78,17 @@ function orderMessage(data, method, items, t, orderId) {
     `VAT (12%): ${formatPHP(t.vat)}`,
     `Total: ${formatPHP(t.total)}`,
     "",
-    `Refundable: you can cancel within 7 days and get ${formatPHP(t.total * 0.8)} back (a 20% cancellation fee of ${formatPHP(t.total * 0.2)} applies).`,
+    `Plans change: cancel within 7 days and ${formatPHP(t.total * 0.8)} comes back to you; the ${formatPHP(t.total * 0.2)} balance covers pilot and airspace processing.`,
     "",
-    "If anything is wrong, reply to this email or call +63 917 000 0000.",
+    "Questions? Reply to this email or call +63 917 000 0000, Mon–Sat 8am–6pm.",
   ];
   return lines.filter((line) => line !== null).join("\n");
 }
 
 function emptyView() {
   app.innerHTML = `<section class="center-empty">
-    <h1>Your cart is empty</h1>
-    <p class="muted">Add a service before checking out.</p>
+    <h1>Your booking list is empty</h1>
+    <p class="muted">Add a survey service before you schedule a flight.</p>
     <a href="services.html" class="btn btn-solid">Browse services${arrow()}</a>
   </section>`;
 }
@@ -93,29 +102,34 @@ function formView() {
 
   app.innerHTML = `<section class="page"><div class="container">
     <div class="checkout-head">
-      <a href="cart.html" class="text-link">← Back to cart</a>
-      <h1 class="page-title">Checkout</h1>
+      <a href="cart.html" class="text-link">← Back to booking list</a>
+      <h1 class="page-title">Confirm your booking</h1>
     </div>
 
     <form class="split checkout" id="checkout">
       <div class="form-col">
         <fieldset>
-          <legend><span>01</span>Contact details</legend>
+          <legend><span>01</span>Booking contact</legend>
           <div class="fields two">
-            ${field("Full name", `<input class="input" name="name" required autocomplete="name" placeholder="Juan Dela Cruz">`)}
-            ${field("Company (optional)", `<input class="input" name="company" autocomplete="organization" placeholder="ABC Builders Inc.">`)}
-            ${field("Email", `<input class="input" name="email" type="email" required autocomplete="email" placeholder="juan@company.ph">`)}
-            ${field("Mobile number", `<input class="input" name="phone" type="tel" required autocomplete="tel" placeholder="0917 123 4567" pattern="${PH_MOBILE}" title="PH mobile number, e.g. 0917 123 4567">`)}
+            ${field("Contact name", `<input class="input" name="contact_name" required autocomplete="name" placeholder="Paolo Reyes">`)}
+            ${field("Company (optional)", `<input class="input" name="company_name" autocomplete="organization" placeholder="Marcelo Construction Corp.">`)}
+            ${field("Email", `<input class="input" name="contact_email" type="email" required autocomplete="email" placeholder="paolo@marceloconstruction.ph">`)}
+            ${field("Mobile (for flight-day calls)", `<input class="input" name="contact_phone" type="tel" required autocomplete="tel" placeholder="0918 244 7788" pattern="${PH_MOBILE}" title="PH mobile number, e.g. 0918 244 7788">`)}
           </div>
         </fieldset>
 
         <fieldset>
-          <legend><span>02</span>Project site</legend>
+          <legend><span>02</span>Survey site</legend>
           <div class="fields">
-            ${field("Site address", `<input class="input" name="address" required placeholder="Lot 4, Brgy. San Isidro, Antipolo City">`)}
+            ${field("Site address", `<input class="input" name="site_address" required placeholder="Phase 2, Vermosa, Dasmariñas, Cavite">`)}
+            ${field("Site contact person (if different)", `<input class="input" name="site_contact" placeholder="Engr. Maria Santos · 0917 555 1234">`)}
             <div class="fields two">
-              ${field("Region", `<select class="input" name="region" required><option value="" disabled selected>Select region</option>${REGIONS.map((r) => `<option>${r}</option>`).join("")}</select>`)}
-              ${field("Preferred flight date", `<input class="input" name="date" type="date" required min="${minDate}">`)}
+              ${field("Survey type", `<select class="input" name="survey_type" required><option value="" disabled selected>Select survey type</option><option>Progress photos</option><option>Stockpile volumes</option><option>Topographic map</option></select>`)}
+              ${field("Site area (hectares)", `<input class="input" name="site_area" type="number" min="0.1" step="0.1" placeholder="2.5">`)}
+            </div>
+            <div class="fields two">
+              ${field("Region", `<select class="input" name="site_region" required><option value="" disabled selected>Select region</option>${REGIONS.map((r) => `<option>${r}</option>`).join("")}</select>`)}
+              ${field("Preferred survey date", `<input class="input" name="survey_date" type="date" required min="${minDate}">`)}
             </div>
           </div>
         </fieldset>
@@ -143,14 +157,14 @@ function formView() {
 
       <aside>
         <div class="summary">
-          <h2>Order summary</h2>
+          <h2>Booking summary</h2>
           <ul class="order-lines">${items
             .map((l) => `<li><span>${l.service.name} <span class="x">× ${l.qty}</span></span><span class="tabular strong">${formatPHP(l.lineTotal)}</span></li>`)
             .join("")}</ul>
           ${cart.totalsHTML(sub)}
-          <p class="note">Refundable. Cancel within 7 days using the link in your confirmation email. A 20% cancellation fee applies; you get ${formatPHP(t.total * 0.8)} back.</p>
-          <button type="submit" class="btn btn-solid btn-full" id="pay">${icon("lock")} Pay ${formatPHP(t.total)}</button>
-          <p class="note" id="mail-status" role="status">Your booking email is real. Payment is a demo; no card is charged.</p>
+          <p class="note">Plans change? Cancel within 7 days from the link in your email and ${formatPHP(t.total * 0.8)} comes back — the ${formatPHP(t.total * 0.2)} balance covers pilot and airspace processing.</p>
+          <button type="submit" class="btn btn-solid btn-full" id="pay">${icon("lock")} Confirm booking — ${formatPHP(t.total)}</button>
+          <p class="note" id="mail-status" role="status">This is a demo payment. The booking email is real and reaches your inbox.</p>
         </div>
       </aside>
     </form>
@@ -186,15 +200,15 @@ function formView() {
       }),
     );
     pay.disabled = true;
-    pay.innerHTML = `${icon("loader", "spin")} Processing payment…`;
+    pay.innerHTML = `${icon("loader", "spin")} Confirming your slot…`;
     paying = true;
 
     let mail;
     try {
       mail = await sendEmail(
         {
-          to: data.get("email"),
-          subject: `Your DroneBuild booking request (${orderId})`,
+          to: data.get("contact_email"),
+          subject: `DroneBuild booking ${orderId} — we'll call within 24 hours`,
           message: orderMessage(data, method, items, t, orderId),
           website: data.get("website") || "",
           cta: { label: "Request a refund", href: refundUrl.href },
@@ -204,7 +218,7 @@ function formView() {
     } catch (err) {
       // no order placed and no redirect, so the customer never sees a false "confirmation"
       status.textContent = `${note} ${err.message}`;
-      pay.innerHTML = `${icon("lock")} Pay ${formatPHP(t.total)}`;
+      pay.innerHTML = `${icon("lock")} Confirm booking — ${formatPHP(t.total)}`;
       pay.disabled = false;
       paying = false;
       return;
@@ -214,8 +228,8 @@ function formView() {
     setTimeout(() => {
       cart.placeOrder({
         id: orderId,
-        name: data.get("name"),
-        email: data.get("email"),
+        name: data.get("contact_name"),
+        email: data.get("contact_email"),
         method: method?.label || "Not selected",
         items: items.map((l) => ({ name: l.service.name, qty: l.qty, price: l.service.price })),
         ...t,

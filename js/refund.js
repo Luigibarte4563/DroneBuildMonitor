@@ -53,12 +53,12 @@ function receiptHTML(order) {
 }
 
 function requestMessage({ reference, email, reason }) {
-  const lines = [`Refund request for booking ${reference}.`];
+  const lines = [`A customer asked to cancel booking ${reference} and claim the refund below.`];
 
   if (order) {
     lines.push(
       "",
-      "Items:",
+      "Booked services:",
       ...order.items
         .filter((item) => item && typeof item === "object")
         .map((item) => {
@@ -80,7 +80,7 @@ function requestMessage({ reference, email, reason }) {
     `Contact email: ${email}`,
     `Reason: ${reason || "Not provided"}`,
     "",
-    "We'll review the request and reply within 1 business day.",
+    "Our refund desk reviews the request and replies within 1 business day (Mon–Sat).",
   );
   return lines.join("\n");
 }
@@ -97,7 +97,7 @@ app.innerHTML = `<section class="page"><div class="container">
           <legend><span>01</span>Refund details</legend>
           <div class="fields">
             ${order ? "" : `<label class="field"><span>Booking reference</span><input class="input" name="ref" required maxlength="60" placeholder="DBM-ABC123"></label>`}
-            <label class="field"><span>Email used for booking</span><input class="input" name="email" type="email" required autocomplete="email" placeholder="juan@company.ph"></label>
+            <label class="field"><span>Email used for booking</span><input class="input" name="email" type="email" required autocomplete="email" placeholder="paolo@marceloconstruction.ph"></label>
             <label class="field"><span>Reason for refund</span><select class="input" name="reason" required>
               <option value="" disabled selected>Select a reason…</option>
               <option>Schedule changed</option>
@@ -117,7 +117,7 @@ app.innerHTML = `<section class="page"><div class="container">
       <aside>
         <div class="summary">
           <h2>Refund policy</h2>
-          <p>Cancel within 7 days of booking. A 20% cancellation fee applies; you get 80% back. The refund is reviewed by our team.</p>
+          <p>Booked less than 7 days ago? Cancel and 80% comes back — the 20% balance covers pilot and airspace processing. Our refund desk reviews every request.</p>
         </div>
       </aside>
     </form>

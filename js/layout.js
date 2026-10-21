@@ -28,7 +28,7 @@ function header() {
       <div class="nav-links">${links.join("")}</div>
       <div class="nav-actions">
         <button type="button" class="cart-btn" data-open-cart aria-label="Open cart">
-          ${icon("bag")}<span class="cart-btn-label">Cart</span><span class="cart-count">0</span>
+          ${icon("bag")}<span class="cart-btn-label">Bookings</span><span class="cart-count">0</span>
         </button>
         <button type="button" class="icon-btn menu-btn" aria-label="Open menu" aria-expanded="false">${icon("menu")}</button>
       </div>
@@ -75,8 +75,8 @@ function drawerBody() {
   if (!items.length) {
     return `<div class="empty">
       <div class="empty-icon">${icon("bag")}</div>
-      <p class="empty-title">Your cart is empty</p>
-      <p>Add a service to get started.</p>
+      <p class="empty-title">Your booking list is empty</p>
+      <p>Add a survey service to plan your flight.</p>
       <a href="services.html" class="btn btn-solid">Browse services</a>
     </div>`;
   }
@@ -98,18 +98,18 @@ function drawerBody() {
     <div class="drawer-foot">
       ${cart.totalsHTML(cart.subtotal())}
       <div class="two">
-        <a href="cart.html" class="btn btn-outline">View cart</a>
-        <a href="checkout.html" class="btn btn-solid">Checkout</a>
+        <a href="cart.html" class="btn btn-outline">View bookings</a>
+        <a href="checkout.html" class="btn btn-solid">Confirm booking</a>
       </div>
     </div>`;
 }
 
 function drawer() {
-  return `<button type="button" class="drawer-backdrop" data-close-cart aria-label="Close cart"></button>
-    <aside class="drawer-panel" role="dialog" aria-modal="true" aria-label="Your cart">
+  return `<button type="button" class="drawer-backdrop" data-close-cart aria-label="Close booking list"></button>
+    <aside class="drawer-panel" role="dialog" aria-modal="true" aria-label="Your booking list">
       <div class="drawer-head">
-        <h2>Your cart</h2>
-        <button type="button" class="icon-btn" data-close-cart aria-label="Close cart">${icon("x")}</button>
+        <h2>Your booking list</h2>
+        <button type="button" class="icon-btn" data-close-cart aria-label="Close booking list">${icon("x")}</button>
       </div>
       <div class="drawer-body"></div>
     </aside>`;
@@ -123,7 +123,7 @@ export function openCart(open = true) {
 function refresh() {
   const n = cart.count();
   document.querySelector(".cart-count").textContent = n;
-  document.querySelector(".cart-btn").setAttribute("aria-label", n ? `Open cart, ${n} items` : "Open cart");
+  document.querySelector(".cart-btn").setAttribute("aria-label", n ? `Open booking list, ${n} items` : "Open booking list");
   document.querySelector(".drawer-body").innerHTML = drawerBody();
 }
 
@@ -157,9 +157,9 @@ document.addEventListener("click", (e) => {
   const addBtn = e.target.closest("[data-add]");
   if (addBtn) {
     cart.add(addBtn.dataset.add);
-    addBtn.innerHTML = `${icon("check")} Added to cart`;
+    addBtn.innerHTML = `${icon("check")} Added — opening your booking list`;
     setTimeout(() => openCart(true), 350);
-    setTimeout(() => (addBtn.innerHTML = `${icon("plus")} Add to cart`), 1600);
+    setTimeout(() => (addBtn.innerHTML = `${icon("plus")} Add to booking`), 1600);
   }
 });
 document.addEventListener("keydown", (e) => e.key === "Escape" && openCart(false));

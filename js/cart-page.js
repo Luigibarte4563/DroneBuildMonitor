@@ -25,24 +25,24 @@ function render() {
           .join("")}</ul>
         <aside>
           <div class="summary">
-            <h2>Order summary</h2>
+            <h2>Booking summary</h2>
             ${cart.totalsHTML(cart.subtotal())}
-            <a href="checkout.html" class="btn btn-solid btn-full">Proceed to checkout</a>
+            <a href="checkout.html" class="btn btn-solid btn-full">Proceed to schedule</a>
             <div><p class="summary-label">We accept</p>${badgesHTML()}</div>
           </div>
         </aside>
       </div>`
     : `<div class="page-empty">
         <div class="empty-icon">${icon("bag")}</div>
-        <h2>Your cart is empty</h2>
-        <p>Add a service to get started.</p>
+        <h2>Your booking list is empty</h2>
+        <p>Add a survey service to plan your flight.</p>
         <a href="services.html" class="btn btn-solid">Browse services${arrow()}</a>
       </div>`;
 
   app.innerHTML = `<section class="page"><div class="container">
       <div class="page-title-row">
-        <h1 class="page-title">Cart</h1>
-        ${items.length ? `<button type="button" class="text-link" id="clear">Clear cart</button>` : ""}
+        <h1 class="page-title">Booking list</h1>
+        ${items.length ? `<button type="button" class="text-link" id="clear">Clear list</button>` : ""}
       </div>
       ${body}
     </div></section>`;
