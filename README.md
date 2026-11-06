@@ -9,15 +9,15 @@ npm install
 npm start
 ```
 
-Then go to http://localhost:4173. Copy `.env.example` to `.env` first if you want email to actually send: see [Email](#email-gmail).
+Then go to http://localhost:4173. Copy `.env.example` to `.env` first if you want email to actually send: see [Email](#email-gmail).     
 
-`npm start` serves the pages and `POST /api/send-email` from one origin, so there is no CORS setup. Running plain `python3 -m http.server 4173` still shows the pages but has no mailer. The same applies to VS Code Live Server on port 5500: checkout will report that the email service is not running. Always use `npm start` when testing email....
+`npm start` serves the pages and `POST /api/send-email` from one origin, so there is no CORS setup. Running plain `python3 -m http.server 4173` still shows the pages but has no mailer. The same applies to VS Code Live Server on port 5500: checkout will report that the email service is not running. Always use `npm start` when testing email....    
 
 ## Deploy on Vercel
 .
 Import the GitHub repo. Vercel detects `server.js` as the Node server entrypoint and routes every request to it, so it serves the pages and the API. Set these in **Project Settings → Environment Variables**, then redeploy:
 
-`GMAIL_USER`, `GMAIL_APP_PASSWORD`, and optionally `MAIL_FROM_NAME`, `MAIL_REPLY_TO`, `MAIL_BCC`.
+`GMAIL_USER`, `GMAIL_APP_PASSWORD`, and optionally `MAIL_FROM_NAME`, `MAIL_REPLY_TO`, `MAIL_BCC`...
 
 `vercel.json` raises the function limit to 30 seconds for SMTP and keeps the static assets in the bundle. If the deployed site asks for a Vercel login, set **Project Settings → Deployment Protection → Vercel Authentication** to **Disabled**. GitHub Pages is static-only, so it cannot send email.
 
