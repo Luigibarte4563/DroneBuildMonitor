@@ -16,7 +16,7 @@ Then go to http://localhost:4173. Copy `.env.example` to `.env` first if you wan
 ## Deploy on Vercel
 .
 Import the GitHub repo. Vercel detects `server.js` as the Node server entrypoint and routes every request to it, so it serves the pages and the API. Set these in **Project Settings → Environment Variables**, then redeploy:
-
+ . .
 `GMAIL_USER`, `GMAIL_APP_PASSWORD`, and optionally `MAIL_FROM_NAME`, `MAIL_REPLY_TO`, `MAIL_BCC`...
 
 `vercel.json` raises the function limit to 30 seconds for SMTP and keeps the static assets in the bundle. If the deployed site asks for a Vercel login, set **Project Settings → Deployment Protection → Vercel Authentication** to **Disabled**. GitHub Pages is static-only, so it cannot send email.
