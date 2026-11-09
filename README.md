@@ -1,6 +1,6 @@
 # DroneBuild Monitor
 
-Website for a drone construction monitoring service in the Philippines. Plain HTML, CSS and JavaScript, plus one small Node server for the Gmail mailer. No build step.
+Website for a drone construction. monitoring service in the Philippines. Plain HTML, CSS and JavaScript, plus one. small Node server for the Gmail mailer. No build step.
 
 ## Run
    
