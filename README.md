@@ -5,7 +5,7 @@ Website for a drone construction. monitoring service in the Philippines. Plain H
 ## Run
    
 ```
-npm install
+npm install . . .
 npm start
 ```
 
