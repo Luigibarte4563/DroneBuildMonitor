@@ -27,7 +27,7 @@ Import the GitHub repo. Vercel detects `server.js` as the Node server entrypoint
 - `css/styles.css`: all styles
 - `js/data.js`: services and prices
 - `js/cart.js`: cart saved in localStorage
-- `js/layout.js`: header, footer and cart drawer
+- `js/layout.js`: header, footer and cart drawer..
 - `js/motion.js`: scroll animations
 - `js/mailer.js`: reusable `sendEmail()` client
 - `js/refund.js`: refund request form
